@@ -64,7 +64,12 @@ func main() {
 			},
 		},
 	}
-
+	// List pods
+	pods, err := clientset.CoreV1().Pods("default").List(metav1.ListOptions{LabelSelector: "app-type=jupyter-notebook"})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
 	// Create Deployment
 	fmt.Println("Creating deployment...")
 	result, err := deploymentsClient.Create(deployment)
