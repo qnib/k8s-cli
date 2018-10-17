@@ -1,0 +1,34 @@
+---
+version: 0.0.1
+name: k8s-cli
+description: "example k8s-client"
+maintainers:
+- name: Christian Kniep
+  email: christian@qnib.org
+targets:
+  swarm: true
+  kubernetes: true
+
+---
+version: "3.6"
+services:
+  cli:
+    image: ${image}
+    secrets:
+          - source: k8s-cli-token
+            target: /var/run/secrets/kubernetes.io/serviceaccount/token
+          #- source: k8s-cli-ca
+          #  target: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    environment:
+        KUBERNETES_SERVICE_HOST: ${k8s.host}
+        KUBERNETES_SERVICE_PORT: ${k8s.port}
+secrets:
+    k8s-cli-ca:
+        file: ./k8s/ca.crt
+    k8s-cli-token:
+        file: ./k8s/token
+---
+k8s:
+    host: host.docker.internal
+    port: 6443
+image: qnib/k8s-cli
